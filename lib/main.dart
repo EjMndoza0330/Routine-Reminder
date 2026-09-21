@@ -9,6 +9,7 @@
 
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
+import 'apptheme.dart';
 
 void main() {
   runApp(
@@ -24,10 +25,7 @@ void main() {
     // you made the layout properly responsive)? Add
     //   import 'package:flutter/foundation.dart' show kReleaseMode;
     // and set `enabled: !kReleaseMode`, which drops the frame in release builds.
-    DevicePreview(
-      enabled: true,
-      builder: (context) => const MyApp(),
-    ),
+    DevicePreview(enabled: true, builder: (context) => const MyApp()),
   );
 }
 
@@ -37,22 +35,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'My Final Project',
+      title: 'Routine Reminder',
       debugShowCheckedModeBanner: false,
-
       // These two lines are what make the DevicePreview toolbar actually
       // change the app. Keep them.
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
-
       // Your design system starts here. One seed color generates a full
       // Material palette; swap in your own and every screen follows.
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6750A4)),
-      ),
-
-      home: const HomeScreen(),
+      theme: appTheme,
+      home: const Dashboard(),
     );
   }
 }
@@ -61,23 +53,16 @@ class MyApp extends StatelessWidget {
 ///
 /// It is a StatefulWidget because it remembers something that changes: the
 /// counter. A screen that never changes can be a StatelessWidget instead.
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<Dashboard> createState() => _DashboardState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _DashboardState extends State<Dashboard> {
   // State: a plain field. Changing it does nothing on its own; the screen only
   // redraws when you change it inside setState.
-  int _taps = 0;
-
-  void _handleTap() {
-    setState(() {
-      _taps++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,56 +72,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Final Project'),
-        backgroundColor: theme.colorScheme.primaryContainer,
+        title: Text('ROUTINE REMINDER', style: theme.textTheme.headlineSmall),
+        backgroundColor: theme.colorScheme.primary,
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.rocket_launch,
-                size: 72,
-                color: theme.colorScheme.primary,
-              ),
-              const SizedBox(height: 16),
-              Text('It works', style: theme.textTheme.headlineSmall),
-              const SizedBox(height: 8),
-              Text(
-                'This is the starting point of your final project. '
-                'Open lib/main.dart and start changing it.',
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 24),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      Text('Taps: $_taps',
-                          style: theme.textTheme.headlineSmall),
-                      const SizedBox(height: 12),
-                      FilledButton.icon(
-                        onPressed: _handleTap,
-                        icon: const Icon(Icons.touch_app),
-                        label: const Text('Tap me'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Close the app and the count goes back to zero. '
-                'Fixing that is what content/extending-your-app is about.',
-                textAlign: TextAlign.center,
-                style: theme.textTheme.labelSmall,
-              ),
-            ],
-          ),
+      body: Container(
+        padding: const EdgeInsets.all(AppSpacing.standard),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.local_fire_department,
+              size: 170,
+              color: theme.colorScheme.primary,
+            ),
+            const SizedBox(width: AppSpacing.base),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('CURRENT STREAK', style: theme.textTheme.bodyMedium),
+                const SizedBox(height: AppSpacing.base),
+                Text('10', style: theme.textTheme.bodyMedium),
+              ],
+            ),
+          ],
         ),
       ),
     );
