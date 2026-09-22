@@ -8,6 +8,7 @@
 // StatefulWidget, setState, Scaffold, AppBar, Column, Card, FilledButton.
 
 import 'package:device_preview/device_preview.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'apptheme.dart';
 
@@ -34,17 +35,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Routine Reminder',
-      debugShowCheckedModeBanner: false,
-      // These two lines are what make the DevicePreview toolbar actually
-      // change the app. Keep them.
-      locale: DevicePreview.locale(context),
-      builder: DevicePreview.appBuilder,
-      // Your design system starts here. One seed color generates a full
-      // Material palette; swap in your own and every screen follows.
-      theme: appTheme,
-      home: const Dashboard(),
+    return ScreenUtilInit(
+      designSize: const Size(402, 876),
+      builder: (context, child) {
+        return MaterialApp(
+          title: 'Routine Reminder',
+          debugShowCheckedModeBanner: false,
+          // These two lines are what make the DevicePreview toolbar actually
+          // change the app. Keep them.
+          locale: DevicePreview.locale(context),
+          builder: DevicePreview.appBuilder,
+          // Your design system starts here. One seed color generates a full
+          // Material palette; swap in your own and every screen follows.
+          theme: appTheme,
+          home: const Dashboard(),
+        );
+      },
     );
   }
 }
@@ -82,16 +88,17 @@ class _DashboardState extends State<Dashboard> {
           children: [
             Icon(
               Icons.local_fire_department,
-              size: 170,
+              size: 155.r,
               color: theme.colorScheme.primary,
             ),
-            const SizedBox(width: AppSpacing.base),
+            const SizedBox(width: AppSpacing.standard),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('CURRENT STREAK', style: theme.textTheme.bodyMedium),
+                const SizedBox(height: AppSpacing.standard),
+                Text('CURRENT STREAK', style: theme.textTheme.headlineSmall),
                 const SizedBox(height: AppSpacing.base),
-                Text('10', style: theme.textTheme.bodyMedium),
+                Text('10', style: theme.textTheme.headlineSmall),
               ],
             ),
           ],
