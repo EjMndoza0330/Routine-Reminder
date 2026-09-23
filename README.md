@@ -11,11 +11,11 @@
 
 ## Screenshots
 
-```
+
 | Dashboard | Task Configuration | Success Screen |
 | --- | --- | --- |
 | ![Home](docs/assets/Main_Dashboard.png) |  | |
-```
+
 
 ## What it does
 
@@ -28,10 +28,8 @@
 - NOT YET DONE: Trigger a lazy alarm system with midnight resets and overdue tags.
 
 ## Built with
-
-| | |
-| --- | --- |
 | Framework | Flutter (Dart) |
+| --- | --- |
 | State | `setState` (will add more) |
 | Storage | (will be using shared_preferences. NOT YET IMPLEMENTED) |
 | Other packages | `flutter_screenutil`, `google_fonts` |
