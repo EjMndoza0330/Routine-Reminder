@@ -11,65 +11,48 @@
 
 ## Screenshots
 
-Put two or three real screenshots at phone size in `docs/assets/`, then replace
-this paragraph with them:
-
-```markdown
-| Home | Detail | Add |
-| --- | --- | --- |
-| ![Home](docs/assets/screen-home.png) | ![Detail](docs/assets/screen-detail.png) | ![Add](docs/assets/screen-add.png) |
 ```
-
-A repo without screenshots reads as abandoned, whatever the code says.
+| Dashboard | Task Configuration | Success Screen |
+| --- | --- | --- |
+| ![Home](docs/assets/Main_Dashboard.png) |  | |
+```
 
 ## What it does
 
-Three to five bullets. What can a user actually do?
+- Displays a daily dashboard with a streak counter and dynamic progress bar.
 
-- ...
-- ...
-- ...
+- Allows users to view a list of daily tasks with assigned times.
+
+- NOT YET DONE: Add new tasks via a configuration modal.
+
+- NOT YET DONE: Trigger a lazy alarm system with midnight resets and overdue tags.
 
 ## Built with
 
 | | |
 | --- | --- |
 | Framework | Flutter (Dart) |
-| State | `setState` / provider / riverpod (say which) |
-| Storage | shared_preferences / Hive / Drift / Firebase / Supabase / other |
-| Other packages | list the ones that matter, with a word on why |
+| State | `setState` (will add more) |
+| Storage | (will be using shared_preferences. NOT YET IMPLEMENTED) |
+| Other packages | `flutter_screenutil`, `google_fonts` |
 
 ## Running it yourself
 
 ```bash
 flutter pub get
-cp .env.example .env      # only if your app needs keys, see below
 flutter run -d web-server --web-port 8080
 ```
-
-Then open http://localhost:8080. Requires Flutter (run `flutter --version` and
-put yours here).
+Then open http://localhost:8080. Requires Flutter 3.44.8 (run `flutter --version`).
 
 ### Environment variables
 
-This project reads its configuration from a `.env` file that is **not** in the
-repository. Copy `.env.example`, fill in your own values, and never commit the
-result.
-
-| Variable | What it is | Where to get one |
-| --- | --- | --- |
-| `EXAMPLE_API_KEY` | ... | ... |
+This project does not require any environment variables or a `.env` file. All task and streak data is stored locally on the device using `shared_preferences`, and there are no external cloud services or APIs requiring secret keys.
 
 ## Privacy and secrets
 
-Required section. Two or three honest sentences:
-
-- What personal data this app stores, if any, and where it goes.
-- Where the secrets live (`.env` locally, repository secrets in the deploy
-  workflow) and what protects the data on the service side (Firestore rules,
-  Supabase RLS, or "nothing leaves the device").
-- Confirm that all sample data, screenshots and the video contain **no real
-  personal information**.
+- This app currently stores data strictly locally on the device within the app's active memory. No user data is transmitted to external servers.
+- There are currently no API keys, secrets, or .env files required or exposed.
+- All sample data, screenshots, and videos contain **no real personal information.**
 
 ## Project documentation
 
@@ -80,22 +63,24 @@ Required section. Two or three honest sentences:
 | [Design system](docs/03-design-system.md) | colors, type, spacing, components |
 | [Weekly reports](docs/04-weekly-reports.md) | what happened each week |
 | [Demo video](docs/05-demo-video.md) | the recording and what it shows |
-| [Start here](START-HERE.md) | how this repo works (delete once you have read it) |
 | [Security and privacy](docs/06-security-and-privacy.md) | the checklist, filled in |
 
 ## Status and what is next
 
-Be honest. What works, what is half done, what you would build next. An honest
-"known issues" section reads better than a claim the reader disproves in thirty
-seconds.
+- The core Dashboard UI is complete including Custom Progress Bar, Task List layout, and Primary Button.
+- 
+**Not yet Done**
+- The Task Configuration Modal (to make the "Add Task" button functional).
+- Persistent state management/storage so tasks save between reloads.
+- The Lazy Alarm System (DateTime logic and overdue tags). 
+- The Success Screen and its navigation routing. 
 
 ## Credits
 
 - Packages: see `pubspec.yaml`
-- Assets, icons, 3D models, sounds: name the author and the licence for each
-- People who helped, and how
+- Custom Icons: Material Icons (built-in)
 
-## AI use
+## AI use (Not Finished)
 
 If you used AI while building this, say so here. Honest disclosure is the
 standard in this course and increasingly outside it, and reporting heavy use
@@ -115,4 +100,4 @@ visitor reads; that file is the record the badge is graded from.
 
 ## Licence
 
-MIT, see [LICENSE](LICENSE). Change it if you want different terms.
+MIT, see [LICENSE](LICENSE).
