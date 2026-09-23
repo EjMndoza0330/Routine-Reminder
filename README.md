@@ -2,10 +2,10 @@
 
 > Routine Reminder is a habit tracking app created to help users manage daily tasks, track progress and build consistency through the streak system. 
 
-**Live demo:** https://YOURUSERNAME.github.io/YOUR-REPO/ <!-- GitHub Pages is set up already; replace if you host elsewhere -->
-**Demo video:** `docs/demo.mp4` (link it here once it exists)
-**Course:** Applications Development and Emerging Technologies (6ADET), Holy Angel University
-**Author:** Enrico T. Mendoza Jr.
+- **Live demo:** https://ejmndoza0330.github.io/Routine-Reminder/
+- **Demo video:** `docs/demo.mp4` (link it here once it exists)
+- **Course:** Applications Development and Emerging Technologies (6ADET), Holy Angel University
+- **Author:** Enrico T. Mendoza Jr.
 
 ---
 
