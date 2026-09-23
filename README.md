@@ -71,7 +71,7 @@ This project does not require any environment variables or a `.env` file. All ta
 - The Task Configuration Modal (to make the "Add Task" button functional).
 - Persistent state management/storage so tasks save between reloads.
 - The Lazy Alarm System (DateTime logic and overdue tags). 
-- The Success Screen and its navigation routing. 
+- The Success Screen UI. 
 
 ## Credits
 
