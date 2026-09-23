@@ -23,9 +23,9 @@
 
 - Allows users to view a list of daily tasks with assigned times.
 
-- NOT YET DONE: Add new tasks via a configuration modal.
+- **NOT YET DONE:** Add new tasks via a configuration modal.
 
-- NOT YET DONE: Trigger a lazy alarm system with midnight resets and overdue tags.
+- **NOT YET DONE:** Trigger a lazy alarm system with midnight resets and overdue tags.
 
 ## Built with
 | Framework | Flutter (Dart) |
@@ -66,7 +66,7 @@ This project does not require any environment variables or a `.env` file. All ta
 ## Status and what is next
 
 - The core Dashboard UI is complete including Custom Progress Bar, Task List layout, and Primary Button.
-- 
+
 **Not yet Done**
 - The Task Configuration Modal (to make the "Add Task" button functional).
 - Persistent state management/storage so tasks save between reloads.
@@ -77,6 +77,8 @@ This project does not require any environment variables or a `.env` file. All ta
 
 - Packages: see `pubspec.yaml`
 - Custom Icons: Material Icons (built-in)
+  
+---
 
 ## AI use (Not Finished)
 
@@ -87,7 +89,7 @@ accurately costs you nothing.
 This section is the last 10 points of the finals badge, and it wants three
 things:
 
-![Built with AI assistance](https://img.shields.io/badge/built%20with-AI%20assistance-0b5fff)
+`![Built with AI assistance](https://img.shields.io/badge/built%20with-AI%20assistance-0b5fff)`
 
 - the badge above, or one you like better
 - a line naming which assistant you used and how much of the work it touched
@@ -95,6 +97,8 @@ things:
 
 Keep the detail in `AI-USAGE.md` rather than here. This section is the summary a
 visitor reads; that file is the record the badge is graded from.
+
+---
 
 ## Licence
 
