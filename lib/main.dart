@@ -10,6 +10,7 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
+import 'dashboard.dart';
 import 'apptheme.dart';
 
 void main() {
@@ -36,7 +37,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(402, 876),
+      designSize: const Size(
+        402,
+        874,
+      ), //Frame Size of Figma Mockup using Iphone 17
       builder: (context, child) {
         return MaterialApp(
           title: 'Routine Reminder',
@@ -45,65 +49,10 @@ class MyApp extends StatelessWidget {
           // change the app. Keep them.
           locale: DevicePreview.locale(context),
           builder: DevicePreview.appBuilder,
-          // Your design system starts here. One seed color generates a full
-          // Material palette; swap in your own and every screen follows.
           theme: appTheme,
           home: const Dashboard(),
         );
       },
-    );
-  }
-}
-
-/// The first screen. Replace it with yours.
-///
-/// It is a StatefulWidget because it remembers something that changes: the
-/// counter. A screen that never changes can be a StatelessWidget instead.
-class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
-
-  @override
-  State<Dashboard> createState() => _DashboardState();
-}
-
-class _DashboardState extends State<Dashboard> {
-  // State: a plain field. Changing it does nothing on its own; the screen only
-  // redraws when you change it inside setState.
-
-  @override
-  Widget build(BuildContext context) {
-    // Reading colors and text styles from the theme, instead of hardcoding
-    // them, is what keeps every screen looking like the same app.
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('ROUTINE REMINDER', style: theme.textTheme.headlineSmall),
-        backgroundColor: theme.colorScheme.primary,
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(AppSpacing.standard),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              Icons.local_fire_department,
-              size: 155.r,
-              color: theme.colorScheme.primary,
-            ),
-            const SizedBox(width: AppSpacing.standard),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: AppSpacing.standard),
-                Text('CURRENT STREAK', style: theme.textTheme.headlineSmall),
-                const SizedBox(height: AppSpacing.base),
-                Text('10', style: theme.textTheme.headlineSmall),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
