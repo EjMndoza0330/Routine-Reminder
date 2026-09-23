@@ -1,14 +1,6 @@
-<!--
-  This is your project's front page. Replace every placeholder below.
-  It is the first thing your instructor and any future employer will read, and
-  the live link in it is how your project gets opened for grading.
+# ROUTINE REMINDER
 
-  New here? Read START-HERE.md first. Delete this comment when you are done.
--->
-
-# App Name
-
-> One sentence: what this app does, and who it is for.
+> Routine Reminder is a habit tracking app created to help users manage daily tasks, track progress and build consistency through the streak system. 
 
 **Live demo:** https://YOURUSERNAME.github.io/YOUR-REPO/ <!-- GitHub Pages is set up already; replace if you host elsewhere -->
 **Demo video:** `docs/demo.mp4` (link it here once it exists)
