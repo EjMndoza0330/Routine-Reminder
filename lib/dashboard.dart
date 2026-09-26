@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'widgets/primary_button.dart';
 import 'widgets/progress_bar.dart';
 import 'apptheme.dart';
-import 'widgets/task.dart';
+import 'task.dart';
+import 'success.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -16,18 +17,30 @@ class _DashboardState extends State<Dashboard> {
   late double percentage = 0.0;
   late int streak = 0;
 
+  Future<void> _completedAllTasks() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SuccessScreen(streak: streak + 1, progress: percentage),
+      ),
+    );
+
+    setState(() {
+      streak++;
+      percentage = 0.0;
+      for (final task in tasks) {
+        task.isCompleted = false;
+      }
+    });
+  }
+
   List<Task> tasks = [
     //--------------------------------------------------------------------------Sample Task Inputs
     Task(name: 'Clean Desk', time: const TimeOfDay(hour: 9, minute: 0)),
-    Task(name: 'Drink Medicine', time: const TimeOfDay(hour: 10, minute: 0)),
-    Task(name: 'Work Out', time: const TimeOfDay(hour: 11, minute: 0)),
-    Task(name: 'Feed Pets', time: const TimeOfDay(hour: 12, minute: 0)),
-    Task(
-      name: 'Continue Coding Progress for Final Project',
-      time: const TimeOfDay(hour: 14, minute: 0),
-    ),
-    Task(name: 'Pass Acts', time: const TimeOfDay(hour: 23, minute: 59)),
-    Task(name: 'Turn off AC', time: const TimeOfDay(hour: 16, minute: 30)),
+    Task(name: 'Clean Living Room', time: const TimeOfDay(hour: 10, minute: 0)),
+    Task(name: 'Clean Kitchen', time: const TimeOfDay(hour: 11, minute: 0)),
+    Task(name: 'Clean PC', time: const TimeOfDay(hour: 12, minute: 0)),
+    Task(name: 'Clean Dishes', time: const TimeOfDay(hour: 13, minute: 0)),
   ]; //-------------------------------------------------------------------------Sample Task Inputs
 
   @override
@@ -51,25 +64,22 @@ class _DashboardState extends State<Dashboard> {
           children: [
             Row(
               //----------------------------------------------------------------Icon + Streak Counter
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
                   Icons.local_fire_department,
-                  size: 155.r,
+                  size: (155.r).clamp(120.0, 200.0),
                   color: theme.colorScheme.primary,
                 ),
-                const SizedBox(width: AppSpacing.standard),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(height: AppSpacing.standard),
                     Text(
                       'CURRENT STREAK',
                       style: theme.textTheme.headlineSmall?.copyWith(
                         color: theme.colorScheme.onPrimary,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.base),
                     Text(
                       '$streak',
                       style: theme.textTheme.headlineSmall?.copyWith(
@@ -77,7 +87,8 @@ class _DashboardState extends State<Dashboard> {
                       ),
                     ),
                   ],
-                ), //-----------------------------------------------------------Icon + Streak Counter
+                ),
+                //-----------------------------------------------------------Icon + Streak Counter
                 const SizedBox(height: AppSpacing.base),
               ],
             ),
@@ -127,15 +138,24 @@ class _DashboardState extends State<Dashboard> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: ListTile(
-                      leading: IconButton(
-                        onPressed: () {},
-                        style: IconButton.styleFrom(
-                          //backgroundColor: theme.colorScheme.onPrimary,
-                          foregroundColor: theme.colorScheme.secondary,
-                        ),
-                        icon: Icon(Icons.check_box_outline_blank),
-                        iconSize: 30,
-                      ),
+                      leading: Checkbox(
+                        //--New
+                        value: t.isCompleted,
+                        onChanged: (checked) {
+                          setState(() {
+                            tasks[index].isCompleted = checked ?? false;
+                            percentage = tasks.isEmpty
+                                ? 0.0
+                                : tasks
+                                          .where((task) => task.isCompleted)
+                                          .length /
+                                      tasks.length;
+                          });
+                          if (percentage == 1.0) {
+                            _completedAllTasks();
+                          }
+                        },
+                      ), //--New
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

@@ -15,28 +15,32 @@ class ProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final clamped = progress.clamp(0.0, 1.0); //--New
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
         color: theme.colorScheme.secondary.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(5),
       ),
       child: Stack(
         children: [
-          Container(
-            width: width * progress,
-            height: height,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primary,
-              borderRadius: BorderRadius.circular(20),
+          FractionallySizedBox(
+            //--New
+            widthFactor: clamped,
+            child: Container(
+              height: height,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                borderRadius: BorderRadius.circular(5),
+              ),
             ),
-          ),
+          ), //--New
           Align(
-            alignment: Alignment.center,
+            alignment: Alignment.centerLeft,
             child: Text(
-              '${(progress * 100).toInt()}%',
-              style: theme.textTheme.labelLarge?.copyWith(
+              '${(clamped * 100).toInt()}%',
+              style: theme.textTheme.labelSmall?.copyWith(
                 color: theme.colorScheme.onPrimary,
               ),
             ),

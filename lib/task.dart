@@ -6,4 +6,11 @@ class Task {
   bool isCompleted;
 
   Task({required this.name, required this.time, this.isCompleted = false});
+  //--New
+  Map<String, dynamic> toMap() => {
+    'name': name,
+    'time': time,
+    'isCompleted': isCompleted,
+  };
+  //--New
 }

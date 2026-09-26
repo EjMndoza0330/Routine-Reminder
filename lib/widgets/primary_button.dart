@@ -14,7 +14,7 @@ class PrimaryButton extends StatelessWidget {
       style: FilledButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
         backgroundColor: theme.colorScheme.primary,
-        foregroundColor: theme.colorScheme.primary,
+        foregroundColor: theme.colorScheme.onPrimary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Text(
