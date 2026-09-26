@@ -71,22 +71,24 @@ class _DashboardState extends State<Dashboard> {
                   size: (155.r).clamp(120.0, 200.0),
                   color: theme.colorScheme.primary,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'CURRENT STREAK',
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        color: theme.colorScheme.onPrimary,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'CURRENT STREAK',
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          color: theme.colorScheme.onPrimary,
+                        ),
                       ),
-                    ),
-                    Text(
-                      '$streak',
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        color: theme.colorScheme.onPrimary,
+                      Text(
+                        '$streak',
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          color: theme.colorScheme.onPrimary,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 //-----------------------------------------------------------Icon + Streak Counter
                 const SizedBox(height: AppSpacing.base),
