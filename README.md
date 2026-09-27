@@ -14,7 +14,9 @@
 
 | Dashboard | Task Configuration | Success Screen |
 | --- | --- | --- |
-| ![Home](docs/assets/Main_Dashboard.png) |  | |
+| ![Dashboard](assets/Main_Dashboard(iPhone16promax).png) | TO BE ADDED | ![Success](assets/Success_Screen(iPhone16promax).png) |
+| ![Dashboard](assets/Main_Dashboard_80%bar(iPhone16promax).png) | TO BE ADDED  | |
+| ![Dashboard](assets/Main_Dashboard_Streak2(iPhone16promax).png) | TO BE ADDED  | |
 
 
 ## What it does
@@ -65,13 +67,14 @@ This project does not require any environment variables or a `.env` file. All ta
 
 ## Status and what is next
 
-- The core Dashboard UI is complete including Custom Progress Bar, Task List layout, and Primary Button.
+- The core Dashboard UI and Success Screen is complete including Custom Progress Bar, Task List layout, and Primary Button.
+- The progress bar now is linked with the task list. When a task gets checked the progress bar.
+- once progress bar is at 100%, the screen transitions to Success Screen
 
 **Not yet Done**
 - The Task Configuration Modal (to make the "Add Task" button functional).
 - Persistent state management/storage so tasks save between reloads.
 - The Lazy Alarm System (DateTime logic and overdue tags). 
-- The Success Screen UI. 
 
 ## Credits
 
