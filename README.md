@@ -14,9 +14,9 @@
 
 | Dashboard | Task Configuration | Success Screen |
 | --- | --- | --- |
-| ![Dashboard](assets/Main_Dashboard(iPhone16promax).png) | TO BE ADDED | ![Success](assets/Success_Screen(iPhone16promax).png) |
-| ![Dashboard](assets/Main_Dashboard_80%bar(iPhone16promax).png) | TO BE ADDED  | |
-| ![Dashboard](assets/Main_Dashboard_Streak2(iPhone16promax).png) | TO BE ADDED  | |
+| ![Dashboard](docs/assets/Main_Dashboard(iPhone16promax).png) | TO BE ADDED | ![Success](docs/assets/Success_Screen(iPhone16promax).png) |
+| ![Dashboard](docs/assets/Main_Dashboard_80%bar(iPhone16promax).png) | TO BE ADDED  | |
+| ![Dashboard](docs/assets/Main_Dashboard_Streak2(iPhone16promax).png) | TO BE ADDED  | |
 
 
 ## What it does
