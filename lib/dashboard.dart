@@ -5,6 +5,8 @@ import 'widgets/progress_bar.dart';
 import 'apptheme.dart';
 import 'task.dart';
 import 'success.dart';
+import 'taskmodal.dart';
+
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -14,10 +16,18 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  late double percentage = 0.0;
-  late int streak = 0;
 
-  Future<void> _completedAllTasks() async {
+//------------------------------------------------------------------------------fields
+  double get percentage  =>
+    tasks.isEmpty ? 0.0 : tasks.where((t) => t.isCompleted).length / tasks.length;
+  late int streak = 0;
+  bool _streakCountedToday = false;
+  DateTime lastAccessedDate = DateTime.now();
+  bool _isSameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
+//------------------------------------------------------------------------------fields
+
+//-------------------------------------------------------------------------------to update Streak and progress bar
+  Future<void> _completedAllTasks() async { //--to update Streak and progress bar
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -27,21 +37,69 @@ class _DashboardState extends State<Dashboard> {
 
     setState(() {
       streak++;
-      percentage = 0.0;
-      for (final task in tasks) {
-        task.isCompleted = false;
+    });
+  }
+//--------------------------------------------------------------------------------to update Streak and progress bar
+
+//--------------------------------------------------------------------------------to call the Task Modal
+  Future<void> _handleTaskModal({Task? existingTask, int? index}) async {
+    final result =  await showDialog<Task>(
+      context: context,
+      builder: (_) => TaskModal(task: existingTask), 
+    );
+
+    if (result == null){ //when the user cancells or exits the modal, it'll do nothing
+      return;
+    }
+    
+    setState(() {
+      if (index != null){
+        tasks[index] = result; //for edit
+      }
+      else{
+        tasks.add(result); //to add
       }
     });
   }
+//--------------------------------------------------------------------------------to call the Task Modal
 
+//-------------------------------------------------------------------------------- Checking if the day has changed to reset the tasks and update the streak
+@override
+void initState() {
+  super.initState();
+  _checkNewDay();
+}
+
+
+void _checkNewDay() async {
+  final now = DateTime.now();
+
+  if (_isSameDay(now, lastAccessedDate)){
+    
+  }
+  else{
+    setState(() {
+      for (final task in tasks){
+        task.isCompleted = false;
+      }
+      lastAccessedDate = now;
+      _streakCountedToday = false;
+    });
+  }
+}
+//-------------------------------------------------------------------------------- Checking if the day has changed to reset the tasks and update the streak
+
+//--------------------------------------------------------------------------Sample Task Inputs
   List<Task> tasks = [
-    //--------------------------------------------------------------------------Sample Task Inputs
+    
     Task(name: 'Clean Desk', time: const TimeOfDay(hour: 9, minute: 0)),
     Task(name: 'Clean Living Room', time: const TimeOfDay(hour: 10, minute: 0)),
     Task(name: 'Clean Kitchen', time: const TimeOfDay(hour: 11, minute: 0)),
     Task(name: 'Clean PC', time: const TimeOfDay(hour: 12, minute: 0)),
     Task(name: 'Clean Dishes', time: const TimeOfDay(hour: 13, minute: 0)),
-  ]; //-------------------------------------------------------------------------Sample Task Inputs
+  ]; 
+//-------------------------------------------------------------------------Sample Task Inputs
+
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +120,9 @@ class _DashboardState extends State<Dashboard> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+//----------------------------------------------------------------Icon + Streak Counter
             Row(
-              //----------------------------------------------------------------Icon + Streak Counter
+              
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
@@ -90,12 +149,14 @@ class _DashboardState extends State<Dashboard> {
                     ],
                   ),
                 ),
-                //-----------------------------------------------------------Icon + Streak Counter
+                
                 const SizedBox(height: AppSpacing.base),
               ],
             ),
+//-----------------------------------------------------------Icon + Streak Counter
+
+//---------------------------------------------------------------Progress Bar
             Column(
-              //---------------------------------------------------------------Progress Bar
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Align(
@@ -109,9 +170,12 @@ class _DashboardState extends State<Dashboard> {
                 ),
                 const SizedBox(height: AppSpacing.edge),
                 ProgressBar(progress: percentage, height: 20.h, width: 300.w),
-              ], //---------------------------------------------------------------Progress Bar
+              ], 
             ),
+
+//---------------------------------------------------------------Progress Bar
             const SizedBox(height: AppSpacing.edge),
+
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -121,10 +185,12 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
             ),
+
             const SizedBox(height: AppSpacing.edge),
+
+//------------------------------------------------Task List
             Expanded(
-              child: ListView.builder(
-                //------------------------------------------------Task List
+              child: ListView.builder(      
                 shrinkWrap: true,
                 physics: const BouncingScrollPhysics(),
                 itemCount: tasks.length,
@@ -141,23 +207,17 @@ class _DashboardState extends State<Dashboard> {
                     ),
                     child: ListTile(
                       leading: Checkbox(
-                        //--New
                         value: t.isCompleted,
                         onChanged: (checked) {
                           setState(() {
                             tasks[index].isCompleted = checked ?? false;
-                            percentage = tasks.isEmpty
-                                ? 0.0
-                                : tasks
-                                          .where((task) => task.isCompleted)
-                                          .length /
-                                      tasks.length;
                           });
-                          if (percentage == 1.0) {
+                          if (percentage == 1.0 && !_streakCountedToday) {
                             _completedAllTasks();
+                            _streakCountedToday = true;
                           }
                         },
-                      ), //--New
+                      ), 
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -177,7 +237,7 @@ class _DashboardState extends State<Dashboard> {
                           ),
                           const SizedBox(width: AppSpacing.edge),
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () => _handleTaskModal(existingTask: t, index: index),
                             style: IconButton.styleFrom(
                               foregroundColor: theme.colorScheme.onSurface,
                             ),
@@ -186,7 +246,7 @@ class _DashboardState extends State<Dashboard> {
                           ),
 
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () => setState(() => tasks.removeAt(index)),
                             style: IconButton.styleFrom(
                               foregroundColor: theme.colorScheme.error,
                             ),
@@ -198,18 +258,23 @@ class _DashboardState extends State<Dashboard> {
                     ),
                   );
                 },
-              ), //----------------------------------------------------------------Task List
+              ),
             ),
+//------------------------------------------------Task List
+
             const SizedBox(height: AppSpacing.edge),
+
+//------------------------------------------------------------Primary Button
             Align(
-              //------------------------------------------------------------Primary Button
               alignment: Alignment.center,
               child: SizedBox(
                 width: MediaQuery.sizeOf(context).width * 0.40,
-                child: PrimaryButton(label: 'ADD TASK', onPressed: () {}),
+                child: PrimaryButton(label: 'ADD TASK', onPressed: () => _handleTaskModal()),
               ),
-            ), //----------------------------------------------------------------Primary Button
-          ], //-----------------------------------------------------------------Body column children
+            ),
+//----------------------------------------------------------------Primary Button
+          ], 
+//-----------------------------------------------------------------Body column children
         ),
       ),
     );
