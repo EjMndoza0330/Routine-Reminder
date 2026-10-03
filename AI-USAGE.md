@@ -117,9 +117,7 @@ scores zero.
   > This was `Claude`'s own output when first building out the `Task` model. Two separate problems: `taskMinutes` got mixed with `now`'s hour with the task's own minute instead of using `time.hour`, producing a comparison that didn't actually represent the task's scheduled time. Separately, the getter never referenced `recurrence` at all, so a task scheduled for only one day of the week would show as overdue every day past its time, not just its scheduled day. Both bugs shipped silently and weren't caught until I tested the overdue badge and it behaved incorrectly.
 -  **What I did instead:**
   > I Flagged the behavior ("Overdue is not working") with the context of what the recurrence days represented, which led to identifying both bugs. Fixed the time math to `time.hour * 60 + time.minute`, and added a check against `recurrence[now.weekday % 7]` (converting Dart's Monday-first weekday numbering to my Sunday-first array) before evaluating time at all.
-- **Commit:**
-  > Time Comparison Fix: https://github.com/EjMndoza0330/Routine-Reminder/commit/05cd94c61cc6bca0fe572519b7dda06093cacd82
-  > Recurrence Fix: https://github.com/EjMndoza0330/Routine-Reminder/commit/adfa9c503c3ad1d06c935f8887cf41b2f86dd729
+- **Commit:** https://github.com/EjMndoza0330/Routine-Reminder/commit/adfa9c503c3ad1d06c935f8887cf41b2f86dd729
 
 
 ### Case 3 - 
