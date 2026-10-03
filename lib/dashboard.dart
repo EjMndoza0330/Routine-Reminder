@@ -6,7 +6,7 @@ import 'apptheme.dart';
 import 'task.dart';
 import 'success.dart';
 import 'taskmodal.dart';
-
+import 'storage.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -16,6 +16,13 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+//-------------------------------------------------------------------Task Storage
+  final TaskStorage _storage = TaskStorage();
+//-------------------------------------------------------------------Task Storage
+
+//-------------------------------------------------------------------Loading Flag
+  bool _isLoading = true;
+//-------------------------------------------------------------------Loading Flag
 
 //------------------------------------------------------------------------------fields
   double get percentage  =>
@@ -25,6 +32,54 @@ class _DashboardState extends State<Dashboard> {
   DateTime lastAccessedDate = DateTime.now();
   bool _isSameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
 //------------------------------------------------------------------------------fields
+
+
+//-------------------------------------------------------------------Loading Task Storage
+@override 
+void initState() {
+  super.initState();
+  _loadData();
+}
+
+Future<void> _loadData() async {
+  final loadedTasks = await _storage.loadTask();
+  final loadedStreak = await _storage.loadStreak();
+  final loadedDate = await _storage.loadLastAccessedDate();
+  final loadedCounted = await _storage.loadStreakCountedToday();
+
+  setState(() {
+    tasks = loadedTasks;
+    streak = loadedStreak;
+    lastAccessedDate = loadedDate ?? DateTime.now();
+    _streakCountedToday = loadedCounted;
+    _isLoading = false;
+  });
+
+  _checkNewDay();
+}
+//-------------------------------------------------------------------Loading Task Storage
+
+//-------------------------------------------------------------------------------- Checking if the day has changed to reset the tasks and update the streak
+void _checkNewDay() async {
+  final now = DateTime.now();
+
+  if (_isSameDay(now, lastAccessedDate)){
+    return;
+  }
+  else{
+    setState(() {
+      for (final task in tasks){
+        task.isCompleted = false;
+      }
+      lastAccessedDate = now;
+      _streakCountedToday = false;
+    });
+    _storage.saveTasks(tasks);
+    _storage.saveLastAccessedDate(now);
+    _storage.saveStreakCountedToday(false);
+  }
+}
+//-------------------------------------------------------------------------------- Checking if the day has changed to reset the tasks and update the streak
 
 //-------------------------------------------------------------------------------to update Streak and progress bar
   Future<void> _completedAllTasks() async { //--to update Streak and progress bar
@@ -38,6 +93,7 @@ class _DashboardState extends State<Dashboard> {
     setState(() {
       streak++;
     });
+    _storage.saveStreak(streak);
   }
 //--------------------------------------------------------------------------------to update Streak and progress bar
 
@@ -60,50 +116,54 @@ class _DashboardState extends State<Dashboard> {
         tasks.add(result); //to add
       }
     });
+
+    _storage.saveTasks(tasks);
   }
 //--------------------------------------------------------------------------------to call the Task Modal
 
-//-------------------------------------------------------------------------------- Checking if the day has changed to reset the tasks and update the streak
-@override
-void initState() {
-  super.initState();
-  _checkNewDay();
-}
-
-
-void _checkNewDay() async {
-  final now = DateTime.now();
-
-  if (_isSameDay(now, lastAccessedDate)){
-    
-  }
-  else{
-    setState(() {
-      for (final task in tasks){
-        task.isCompleted = false;
-      }
-      lastAccessedDate = now;
-      _streakCountedToday = false;
-    });
-  }
-}
-//-------------------------------------------------------------------------------- Checking if the day has changed to reset the tasks and update the streak
-
-//--------------------------------------------------------------------------Sample Task Inputs
-  List<Task> tasks = [
-    
-    Task(name: 'Clean Desk', time: const TimeOfDay(hour: 9, minute: 0)),
-    Task(name: 'Clean Living Room', time: const TimeOfDay(hour: 10, minute: 0)),
-    Task(name: 'Clean Kitchen', time: const TimeOfDay(hour: 11, minute: 0)),
-    Task(name: 'Clean PC', time: const TimeOfDay(hour: 12, minute: 0)),
-    Task(name: 'Clean Dishes', time: const TimeOfDay(hour: 13, minute: 0)),
-  ]; 
-//-------------------------------------------------------------------------Sample Task Inputs
-
+//--------------------------------------------------------------------------Task LIst
+  List<Task> tasks = []; 
+//-------------------------------------------------------------------------Task List
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+//-------------------------------------------------------------------Loading Flag
+    if (_isLoading){
+      return Scaffold(
+        backgroundColor: theme.colorScheme.surface,
+        body: Center(child: CircularProgressIndicator(color: theme.colorScheme.primary),)
+      );
+    }
+//------------------------------------------------------------------Loading Flag    
+
+//---------------------------------------------------------------------------------Confirm Deletion
+void _confirmDelete(int index) async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      backgroundColor: theme.colorScheme.surface,
+      title: Text('Delete Task?', style: theme.textTheme.headlineSmall?.copyWith(color: theme.colorScheme.onSurface)),
+      content: Text('This will permanently remove "${tasks[index].name}".'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+        child: Text('Cancel', style: TextStyle(color: theme.colorScheme.onSurface)),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: Text('Delete', style: TextStyle(color: theme.colorScheme.error))
+        ),
+      ],
+    ),
+  );
+  if (confirmed == true){
+    setState(() => tasks.removeAt(index));
+    _storage.saveTasks(tasks);
+  }
+}
+//--------------------------------------------------------------------------------Confirm Deletion
 
     return Scaffold(
       appBar: AppBar(
@@ -172,8 +232,8 @@ void _checkNewDay() async {
                 ProgressBar(progress: percentage, height: 20.h, width: 300.w),
               ], 
             ),
-
 //---------------------------------------------------------------Progress Bar
+
             const SizedBox(height: AppSpacing.edge),
 
             Align(
@@ -208,13 +268,17 @@ void _checkNewDay() async {
                     child: ListTile(
                       leading: Checkbox(
                         value: t.isCompleted,
-                        onChanged: (checked) {
+                        onChanged: _streakCountedToday ? null : (checked) {
                           setState(() {
                             tasks[index].isCompleted = checked ?? false;
                           });
+
+                          _storage.saveTasks(tasks);
+
                           if (percentage == 1.0 && !_streakCountedToday) {
                             _completedAllTasks();
                             _streakCountedToday = true;
+                            _storage.saveStreakCountedToday(true);
                           }
                         },
                       ), 
@@ -235,7 +299,18 @@ void _checkNewDay() async {
                               color: theme.colorScheme.onSurface,
                             ),
                           ),
-                          const SizedBox(width: AppSpacing.edge),
+                          if (t.isOverdue) ...[
+                            const SizedBox(width: AppSpacing.edge),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.base, vertical: 2),
+                              decoration: BoxDecoration(color: theme.colorScheme.error,
+                              borderRadius: BorderRadius.circular(12)),
+                              child: Text('OVERDUE', style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onError),
+                              ), 
+                            ),
+                          ],
+                            
+                          const SizedBox(width: AppSpacing.base),
                           IconButton(
                             onPressed: () => _handleTaskModal(existingTask: t, index: index),
                             style: IconButton.styleFrom(
@@ -246,7 +321,7 @@ void _checkNewDay() async {
                           ),
 
                           IconButton(
-                            onPressed: () => setState(() => tasks.removeAt(index)),
+                            onPressed: t.isCompleted ? null : () => _confirmDelete(index),
                             style: IconButton.styleFrom(
                               foregroundColor: theme.colorScheme.error,
                             ),

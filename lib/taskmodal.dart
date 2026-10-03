@@ -68,13 +68,13 @@ class _TaskModalState extends State<TaskModal> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  isEditing ? 'EDIT TASK' : 'ADD | EDIT TASK',
+                  isEditing ? 'EDIT TASK' : 'ADD TASK',
                   style: theme.textTheme.headlineSmall?.copyWith(
                     color: theme.colorScheme.onSurface,
                   ),
                 ),
                 IconButton(
-                  onPressed: () => Navigator.pop(context), //closes the modal
+                  onPressed: () => Navigator.pop(context), //closes the modal (X) icon
                   icon: const Icon(Icons.close),
                   color: theme.colorScheme.onSurface,
                 ),
@@ -143,6 +143,17 @@ class _TaskModalState extends State<TaskModal> {
                       final picked = await showTimePicker(
                         context: context,
                         initialTime: _selectedTime,
+                        builder: (context, child){
+                          return Theme(data: Theme.of(context).copyWith(
+                            textButtonTheme: TextButtonThemeData(
+                              style: TextButton.styleFrom(
+                                foregroundColor: theme.colorScheme.onSurface
+                              ),
+                            ),
+                          ),
+                          child: child!,
+                          );
+                        }
                       );
                       if (picked != null) {
                         setState(() => _selectedTime = picked);
