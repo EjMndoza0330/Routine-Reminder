@@ -8,6 +8,7 @@ part of the evidence: a file written all at once the night before the deadline
 looks exactly like what it is.
 
 ## 1. How I used AI
+**Note on commits throughout this log:** I only committed working code, not broken drafts, so commit links in this document show the fixed/final state being added, not a visible before -> after difference of the bug itself. Where an entry describes a change ("moved X", "replaced Y with Z"), the "before" state existed only in my local editor and isn't separately committed.
 
 ### 2026-09-21 to 2026-09-23 - 1st Week 
 
@@ -33,7 +34,7 @@ looks exactly like what it is.
 - **What I kept, what I changed, and why:**
   > **What I kept:** the original `List.builder`/`itemBuilder` structure and the `Column` wrapping everything else on the screen — the fix didn't require restructuring my layout, just adding one constraint.
   > **What I changed:** wrapped `ListView.builder` in `Expanded`
-  > **Why?:** With a `Column`, all the children are given their default size of unlimited height, and the `ListView` will use that to calculate a size that can include all the tasks, but won't be able to scroll through the extra space. A `Column` with a `ListView` in it renders every task but not enough to be scrolled through because the extra space is not part of the default size of the `ListView` by itself. If this bound is not there, Flutter lacks a "viewport" to scroll. The list was not broken, it only didn't have any horizontal scroll bar inside it.
+  > **Why?:** With a `Column`, all the children are given their default size of unlimited height, and the `ListView` will use that to calculate a size that can include all the tasks, but won't be able to scroll through the extra space. A `Column` with a `ListView` in it renders every task but not enough to be scrolled through because the extra space is not part of the default size of the `ListView` by itself. If this bound is not there, Flutter lacks a "viewport" to scroll. The list was not broken, it only didn't have any vertical scroll bar inside it.
 - **Commit:** https://github.com/EjMndoza0330/Routine-Reminder/commit/978f466a2d39f35cf84aa7b82f110dd661ec55ae
 
 ---
@@ -45,8 +46,8 @@ looks exactly like what it is.
 - **What it gave back:**
    > "The error is coming from the Checkbox's `onChanged` in dashboard.dart — that block isn't valid Dart. Fix — move the if check outside setState"
 - **What I kept, what I changed, and why:**
-  > **What I kept:** This was correct, but the logic within the `setState` method (updating `tasks[index].isCompleted` and recalculating the percentage) was inside the wrong structure.
-  > **What I changed:** Moved the `if (percentage == 1.0) { _completeAllTasks(); }` check from within the `setState()` call to after it.
+  > **What I kept:** The logic within `setState` (updating `tasks[index].isCompleted` and recalculating the percentage) that part was already correct, it was just positioned inside the wrong structure in my draft.
+  > **What I changed:** Moved the `if (percentage == 1.0) { _completeAllTasks(); }` check from inside the `setState()` call to after it, before committing. The linked commit shows the corrected version going in alongside the Checkbox widget's first appearance, since I hadn't committed the broken draft.
   > **Why:** The changes to the state that Flutter should respond to and rebuild should be state mutations, not the result of the mutation (such as deciding on what screen to go to if the mutation is success). This also follows the general rule of keeping `setState` callbacks as synchronous, and as narrow in scope as possible, as `_completeAllTasks()` does some async work (await Navigator.push(...)), which should not be in the middle of a `setState` callback, at all.
 - **Commit:** https://github.com/EjMndoza0330/Routine-Reminder/commit/31573e106a30a86889219df41d848c495a1b9d10
 
@@ -72,7 +73,7 @@ looks exactly like what it is.
   > Disagreed — said the mutation logic belongs in dashboard.dart since it owns the tasks list; the modal's only job is building a Task and calling Navigator.pop(context, task). Explained the split as "modal = build-and-return, dashboard = trigger-and-mutate."
 - **What I kept, what I changed, and why:** 
   > **What I changed:** I placed the logic that decides what to do with the returned task from the modal (which is to append to `tasks` list, replace an entry for edit, recalculate the percentage for the progress bar) inside `dashboard`, inside `_handleTaskModal()` rather than inside the `task_modal`'s file.
-  > **What I kept:** Kept the modals original responsibility, which is: Building a `Task` object from `form` input and returning it via `Navigator.pop(context, tast)`.
+  > **What I kept:** Kept the modals original responsibility, which is: Building a `Task` object from `form` input and returning it via `Navigator.pop(context, task)`.
   > **Why?:** The list of tasks is not in the domain of `TaskModal`, it belongs to the `dashboard.dart` file where it is declared and kept in `_DashboardState`. If both widgets mutate the same list, either one of them might do so directly, causing some sort of mutation to be passed in a way that doesn't call for `setState` where it is actually happening, and the modal will be tightly coupled to the internal state of `Dashboard`, making it less reusable. This allows the modal to remain a simple, re-usable, "build and return data" screen, and the dashboard to remain the one place where it determines the action to be taken on the returned Task.
 - **Commit:** https://github.com/EjMndoza0330/Routine-Reminder/commit/05cd94c61cc6bca0fe572519b7dda06093cacd82
 
@@ -82,8 +83,8 @@ looks exactly like what it is.
 - **What it gave back** 
   > the bug wasn't in day_selector.dart at all — it was in task.dart's isOverdue getter, which had two separate problems: (1) it computed `taskMinutes` using `now.hour * 60 + time.minute`, mixing the current hour with the task's own minute instead of using the task's own hour; and (2) it never referenced `recurrence` at all, so a task scheduled for only one day of the week would show as overdue on every day past its time, not just its scheduled day. Gave the fix for both — correcting the time math to `time.hour * 60 + time.minute`, and adding a check against `recurrence[now.weekday % 7]` before evaluating time at all.
 - **What I kept, what I changed, and why:** 
-  > **What I changed:** the overall structure of the `isOverdue` as a computed getter on Task itself, not the logic living in `dashboard`, that is correct, it was just the calculation was wrong.
-  > **What I kept:** Replaced the time comparison with using `time.hour`, `time.minute` consistently – a task can only be overdue on a day it is scheduled for (with a `recurrence[todayIndex]` check, but with `now.weekday % 7` to convert from the Dart's Monday first weekday numbering to the my Sunday first weekday number.
+  > **What I kept:** the overall structure of the `isOverdue` as a computed getter on Task itself, not the logic living in `dashboard`, that is correct, it was just the calculation was wrong.
+  > **What I changed:** Replaced the time comparison with using `time.hour`, `time.minute` consistently – a task can only be overdue on a day it is scheduled for (with a `recurrence[todayIndex]` check, but with `now.weekday % 7` to convert from the Dart's Monday first weekday numbering to my Sunday first weekday number.
   > **Why?:** A getter belongs on `Task` because the overdue-ness is a property of each task comparing itself against the current time. It should't need `dashboard` to compute it externally. The time bug is important because mixing `now`'s hour with the task's minute resulted in meaningless comparisons that happened to look plausible for some times and wrong for others. The recurrence bug mattered because without checking days, a task repeats on any tasks past its scheduled time would show as overdue indefinitely, regardless of where today was actually one of its scheduled days which defeats the purpose of having a recurrence schedule.
 - **Commit:** https://github.com/EjMndoza0330/Routine-Reminder/commit/adfa9c503c3ad1d06c935f8887cf41b2f86dd729
   
@@ -138,7 +139,8 @@ scores zero.
 - **What was wrong with it:**
   > After applying the fix exactly as given, the letters were still clipping outside the circles . The padding adjustment had no effect. When I reported this and tried increasing the size further to 50, it overflowed instead of fixing the clipping. This revealed the real problem. `FilterChip` has an internal Material minimum size that doesn't shrink regardless of the outer `SizedBox` or padding overrides. The padding fix was treating the wrong layer of the problem, since the chip's own internal layout, not my outer constraints, was what was forcing the oversized content.
 -  **What I did instead:**
-  > Rather than continuing to fight `FilterChip`'s internal sizing, I replaced it entirely with a custom widget. A `GestureDetector` wrapping a `Container` with `BoxShape.circle`, `alignment: Alignment.center`, and manually controlled `width`/`height`. This removed the internal-minimum conflict completely, since a plain `Container` genuinely is whatever size it's given, with no hidden layout logic to fight. 
+  > Rather than continuing to fight `FilterChip`'s internal sizing, I replaced it entirely with a custom widget. A `GestureDetector` wrapping a `Container` with `BoxShape.circle`, `alignment: Alignment.center`, and manually controlled `width`/`height`. This removed the internal-minimum conflict completely, since a plain `Container` genuinely is whatever size it's given, with no hidden layout logic to fight.
+> The failed 44px `padding` attempt itself was never separately committed, per my commit practice noted in Section 1, I only commit working code, so this intermediate state existed only in my local editor before I rewrote it.
 - **Commit:** https://github.com/EjMndoza0330/Routine-Reminder/commit/05cd94c61cc6bca0fe572519b7dda06093cacd82
   
 ---
