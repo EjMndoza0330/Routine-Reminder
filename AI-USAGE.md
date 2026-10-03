@@ -156,15 +156,35 @@ it in your own words.
   > **Why I built it this way:** I used two stacked `Container`s instead of Flutter's built-in `LinearProgressIndicator` because I wanted full control over the colors, rounded corners, and the ability to show a percentage label directly on the bar, which the built-in widget doesn't support out of the box. `Stack` lets the fill and the label layer on top of the track without affecting the overall widget's size.
 **Note:**  Note: the original fill-width calculation (`width * progress`) and clamping were later revised with AI assistance after I hit an overflow/sizing bug. See Section 1, Week 2, for that fix.
 
-
 - **File:** `dashboard.dart` — Task list structure
 - **Commit:** https://github.com/EjMndoza0330/Routine-Reminder/commit/978f466a2d39f35cf84aa7b82f110dd661ec55ae
 - **What it does and why it is built this way:**
   > I built the original Dashboard layout. `Card()` containing the streak `row`, progress section, `TASKS` heading, and the `task list`. Structured as a `Column` with the task list in a `ListView.builder` so each task renders from the tasks list rather than being hardcoded per-row. I chose a `ListView.builder` specifically because it only builds visible rows, which matters once the task list grows. The scrolling bug I hit (see Section 1, Week 1) was a consequence of nesting it inside a Column without `Expanded()`. My original structural choice was right, the specific fix for the symptom came from Gemini.
 
+- **File:** `apptheme.dart`
+- **Commit:** https://github.com/EjMndoza0330/Routine-Reminder/commit/b9b0d71538d6d03686282a20f8c86d8ec294f842
+- **What it does and why I built it this way:**
+  > **What it does:** Defines the app's color scheme, spacing constants (AppSpacing), text theme (Google Fonts), and shared component theming (card margins, filled button styling) used across every screen.
+  > **Why I built it this way:** Centralizing colors and spacing in one file means every screen pulls from the same source instead of hardcoding values repeatedly. Changing the primary color or base spacing updates the whole app from one place. I used named constants in `AppSpacing` (base/edge/standard) instead of raw numbers so spacing stays consistent and readable throughout the codebase.
+
+- **File:** success.dart — screen structure
+- **Commit:** https://github.com/EjMndoza0330/Routine-Reminder/commit/31573e106a30a86889219df41d848c495a1b9d10
+- **What it does and why I built it this way:**
+  > **What it does:** The success screen shown after completing all daily tasks — congratulations banner, celebration icon, updated streak display, progress bar, and a button back to the dashboard.
+  > **Why I built it this way:** I composed it as a single scrollable `Column` matching the visual rhythm of the Dashboard screen (same card/spacing conventions from `apptheme.dart`), so the two screens feel like one consistent app rather than two different designs.
+  > **Note:** the layout overflow issues (missing `SingleChildScrollView`, the streak Row needing Expanded, the oversized celebration icon) were caught and fixed with AI assistance — see Section 1, "Success screen layout overflow." The original composition and content choices (what to show, in what order) were mine.
+
+- **File:** dashboard.dart — overall screen structure
+- **Commit:** https://github.com/EjMndoza0330/Routine-Reminder/commit/adfa9c503c3ad1d06c935f8887cf41b2f86dd729
+- **What it does and why I built it this way:**
+  > **What it does:** The Dashboard screen's layout — a `Card` containing the streak/icon row, the progress bar section, the `TASKS` heading, a `ListView.builder` rendering each task as a row with checkbox/edit/delete, and the Add Task button at the bottom.
+  > **Why I built it this way:** I structured it as a single `Column` inside a `Card` so each section (streak, progress, tasks, add button) reads top-to-bottom in the order a user would want to check their day. I chose `ListView.builder` specifically over a plain `Column` of tasks because it only builds visible rows, which matters as the task list grows.
+  > **Note:** the commit linked is the current, fixed state. Several specific bugs in this file (the ListView not scrolling, the checkbox TypeError, the streak-locking logic) were found and fixed with AI assistance over the course of the project, see Section 1 for each of those individually. The structural layout and composition decisions described above were mine from the start.
 
 ### The AI-written part I understand best
 
-- **File:**
-- **Commit:**
+- **File:** `storage.dart`
+- **Commit:** https://github.com/EjMndoza0330/Routine-Reminder/commit/adfa9c503c3ad1d06c935f8887cf41b2f86dd729
 - **What it does and why I kept it:**
+  > **What it does:** A dedicated class handling all `shared_preferences` reads/writes. Separate save/load methods for `tasks`, `streak`, `last accessed date`, and the `streak-counted-today` flag. Tasks are serialized to `JSON strings` via `Task.toMap()/fromMap()` since `shared_preferences` only stores primitives. Every method wraps its `SharedPreferences` call in `try/catch` so a failed read or write can't crash the app. It just fails silently and the in-memory state stays intact.
+  > **Why I kept it:** I wanted the storage logic separated from `dashboard.dart` entirely, so Dashboard only decides when to save/load, not how. The actual `shared_preferences API` calls, `JSON encoding`, and error handling live in one place. The `try/catch` on every method matters specifically because I wanted the app to stay stable even if a save fails for some reason (disk issue, platform quirk, etc.), the user's current session keeps working, it just might not persist that one change, rather than the whole app crashing.
