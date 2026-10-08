@@ -35,4 +35,12 @@ class Task {
     final taskMinutes = time.hour * 60 + time.minute;
     return !isCompleted && nowMinutes > taskMinutes;
   }
+
+  String get scheduleLabel {
+    const names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    final count = recurrence.where((d) => d).length;
+    if (count == 0) return 'No days selected';
+    if (count == 7) return 'Everyday';
+    return [for (var i = 0; i < 7; i++) if (recurrence[i]) names[i]].join(' . ');
+  }
 }

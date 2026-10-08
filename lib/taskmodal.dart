@@ -4,10 +4,8 @@ import '../task.dart';
 import 'widgets/day_selector.dart';
 
 class TaskModal extends StatefulWidget {
-  const TaskModal({super.key, this.task});
-
-  final Task? task; // null = Add mode, non-null = Edit mode
-
+  const TaskModal({super.key, this.task,});
+  final Task? task; // null = Add mode, non-null = Edit mode//to check if a day is selected or not
   @override
   State<TaskModal> createState() => _TaskModalState();
 }
@@ -17,6 +15,7 @@ class _TaskModalState extends State<TaskModal> {
   late TimeOfDay _selectedTime;
   late List<bool> _recurrence;
   bool _showNameError = false;
+  bool _showDaysError = false; 
 
   @override
   void initState() {
@@ -36,8 +35,11 @@ class _TaskModalState extends State<TaskModal> {
 
   void _save() {
     final name = _nameController.text.trim();
-    if (name.isEmpty) { //if name is empty, it shouldn't save
-      setState(() => _showNameError = true);
+    final noDays = !_recurrence.any((d) => d);
+    if (name.isEmpty || noDays) { //if name is empty, it shouldn't save
+      setState(() { 
+        _showNameError = name.isEmpty;
+        _showDaysError = noDays;});
       return;
     }
     final task = Task(
@@ -118,9 +120,18 @@ class _TaskModalState extends State<TaskModal> {
             const SizedBox(height: AppSpacing.base),
             DaySelector(
               recurrence: _recurrence,
-              onChanged: (updated) => setState(() => _recurrence = updated),
+              onChanged: (updated) => setState(() {
+              _recurrence = updated;
+              if (updated.any((d) => d)) _showDaysError = false;
+              }),
             ),
-            const SizedBox(height: AppSpacing.standard),
+            if (_showDaysError)
+             Padding(
+              padding: const EdgeInsets.only(top: AppSpacing.base),
+              child: Text('Select at least one day', style: theme.textTheme.labelLarge?.copyWith(color: theme.colorScheme.error))
+             ),
+
+             const SizedBox(height: AppSpacing.standard),
 
             // Time
             Text(

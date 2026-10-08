@@ -50,7 +50,7 @@ Future<void> _loadData() async {
   setState(() {
     tasks = loadedTasks;
     streak = loadedStreak;
-    lastAccessedDate = loadedDate ?? DateTime.now();
+    lastAccessedDate = loadedDate ?? DateTime.fromMillisecondsSinceEpoch(0);
     _streakCountedToday = loadedCounted;
     _isLoading = false;
   });
@@ -266,7 +266,7 @@ void _confirmDelete(int index) async {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: ListTile(
-                      leading: Checkbox(
+                      leading: Checkbox( //---------------------------------Checkbox
                         value: t.isCompleted,
                         onChanged: _streakCountedToday ? null : (checked) {
                           setState(() {
@@ -282,24 +282,26 @@ void _confirmDelete(int index) async {
                           }
                         },
                       ), 
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
+                      title: Text(
                               t.name,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: theme.colorScheme.onSurface,
                               ),
                             ),
-                          ),
+                      subtitle:Padding(padding: const EdgeInsets.only(top: 4),
+                      child: Wrap(
+                        spacing: AppSpacing.base,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
                           Text(
                             t.time.format(context),
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.colorScheme.onSurface,
                             ),
                           ),
-                          if (t.isOverdue) ...[
+                          Text(t.scheduleLabel, style: theme.textTheme.labelLarge?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.7))),
+                          if (t.isOverdue) ...[ //---------------------------------Overdue Tag
                             const SizedBox(width: AppSpacing.edge),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.base, vertical: 2),
@@ -308,10 +310,14 @@ void _confirmDelete(int index) async {
                               child: Text('OVERDUE', style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onError),
                               ), 
                             ),
-                          ],
-                            
-                          const SizedBox(width: AppSpacing.base),
-                          IconButton(
+                          ], 
+                        ],
+                        
+                      ),
+                      ),
+                      trailing: Row(mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
                             onPressed: () => _handleTaskModal(existingTask: t, index: index),
                             style: IconButton.styleFrom(
                               foregroundColor: theme.colorScheme.onSurface,
@@ -329,7 +335,8 @@ void _confirmDelete(int index) async {
                             iconSize: 20,
                           ),
                         ],
-                      ),
+                      )
+
                     ),
                   );
                 },
