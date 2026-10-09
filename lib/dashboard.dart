@@ -26,14 +26,21 @@ class _DashboardState extends State<Dashboard> {
 //-------------------------------------------------------------------Loading Flag
 
 //------------------------------------------------------------------------------fields
-  double get percentage  =>
-    tasks.isEmpty ? 0.0 : tasks.where((t) => t.isCompleted).length / tasks.length;
   late int streak = 0;
   bool _streakCountedToday = false;
   DateTime lastAccessedDate = DateTime.now();
   bool _isSameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
   Timer? _ticker;
 //------------------------------------------------------------------------------fields
+
+
+//-------------------------------------------------------------------------------Percentage Getter
+double get percentage {
+  final today = tasks.where((t) => t.isScheduledToday).toList();
+  if (today.isEmpty) return 0.0; //  no false 100% 
+  return today.where((t) => t.isCompleted).length / today.length;
+}
+//-------------------------------------------------------------------------------Percentage Getter
 
 
 //-------------------------------------------------------------------Loading Task Storage
@@ -73,24 +80,27 @@ void dispose() {
 }
 
 //-------------------------------------------------------------------------------- Checking if the day has changed to reset the tasks and update the streak
-void _checkNewDay() async {
+void _checkNewDay() {
   final now = DateTime.now();
+  if (_isSameDay(now, lastAccessedDate)) return;
 
-  if (_isSameDay(now, lastAccessedDate)){
-    return;
-  }
-  else{
-    setState(() {
-      for (final task in tasks){
-        task.isCompleted = false;
-      }
-      lastAccessedDate = now;
-      _streakCountedToday = false;
-    });
-    _storage.saveTasks(tasks);
-    _storage.saveLastAccessedDate(now);
-    _storage.saveStreakCountedToday(false);
-  }
+  final yesterday = DateTime(now.year, now.month, now.day - 1);
+  final keptStreak =
+      _streakCountedToday && _isSameDay(lastAccessedDate, yesterday);
+
+  setState(() {
+    if (!keptStreak) streak = 0;
+    for (final task in tasks) {
+      task.isCompleted = false;
+    }
+    lastAccessedDate = now;
+    _streakCountedToday = false;
+  });
+
+  _storage.saveTasks(tasks);
+  _storage.saveStreak(streak);
+  _storage.saveLastAccessedDate(now);
+  _storage.saveStreakCountedToday(false); 
 }
 //-------------------------------------------------------------------------------- Checking if the day has changed to reset the tasks and update the streak
 
@@ -281,7 +291,7 @@ void _confirmDelete(int index) async {
                     child: ListTile(
                       leading: Checkbox( //---------------------------------Checkbox
                         value: t.isCompleted,
-                        onChanged: _streakCountedToday ? null : (checked) {
+                        onChanged: (_streakCountedToday || !t.isScheduledToday) ? null : (checked) {
                           setState(() {
                             tasks[index].isCompleted = checked ?? false;
                           });

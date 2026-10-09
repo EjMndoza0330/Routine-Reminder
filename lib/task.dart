@@ -36,6 +36,10 @@ class Task {
     return !isCompleted && nowMinutes > taskMinutes;
   }
 
+  bool isScheduledOn(DateTime day) => recurrence[day.weekday % 7];
+
+  bool get isScheduledToday => isScheduledOn(DateTime.now());
+
   String get scheduleLabel {
     const names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     final count = recurrence.where((d) => d).length;
