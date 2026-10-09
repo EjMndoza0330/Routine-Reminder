@@ -3,7 +3,7 @@
 
 ![Design system](assets/Design_System_(Visual).png)
 
-[Design system (PDF)](assets/Design_System_(Revised))
+[Design system (PDF)](assets/Design_System_(Visual).pdf)
 
 
 ## Palette
