@@ -2,7 +2,7 @@
 
 ![Mockup Pic](assets/Mockup.png)
 
-![PDF Ver](assets/Mockup.pdf)
+[PDF Ver.](assets/Mockup.pdf)
 
 ## Wireframes
 
