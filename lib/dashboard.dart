@@ -7,6 +7,7 @@ import 'task.dart';
 import 'success.dart';
 import 'taskmodal.dart';
 import 'storage.dart';
+import 'dart:async';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -31,6 +32,7 @@ class _DashboardState extends State<Dashboard> {
   bool _streakCountedToday = false;
   DateTime lastAccessedDate = DateTime.now();
   bool _isSameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
+  Timer? _ticker;
 //------------------------------------------------------------------------------fields
 
 
@@ -39,6 +41,11 @@ class _DashboardState extends State<Dashboard> {
 void initState() {
   super.initState();
   _loadData();
+   _ticker = Timer.periodic(const Duration(seconds: 15), (_) {
+    if (!mounted || _isLoading) return;
+    _checkNewDay();   // catches midnight with the app left open
+    setState(() {});  // re-evaluates isOverdue
+  });
 }
 
 Future<void> _loadData() async {
@@ -58,6 +65,12 @@ Future<void> _loadData() async {
   _checkNewDay();
 }
 //-------------------------------------------------------------------Loading Task Storage
+
+@override
+void dispose() {
+  _ticker?.cancel();
+  super.dispose();
+}
 
 //-------------------------------------------------------------------------------- Checking if the day has changed to reset the tasks and update the streak
 void _checkNewDay() async {
