@@ -1,38 +1,24 @@
 # Demo video
 
-**File:** `demo.mp4` in this folder, or the hosted link (see below)
-**Length:** aim for 3 to 5 minutes
-**Recorded on:** the device you used
+**File:** [`demo.mp4`](https://youtu.be/KYD1N71wjQ8) 
+**Length:** 6 min 42 sec
+**Recorded on:** Laptop
 
 ## What it shows
 
 A short list, in order, so a viewer can skip to what they need:
 
-- 0:00 what the app is and who it is for
-- 0:20 ...
-- 1:10 ...
-
-Cover, in this order: the main user journey end to end, anything that only works
-on a real device (camera, GPS, sensors), and the thing you are proudest of.
-
-## Getting it into the repo
-
-GitHub **blocks any file over 100 MB** and warns over 50 MB, so compress before
-you commit:
-
-```bash
-ffmpeg -i raw.mp4 -vcodec libx264 -crf 28 -preset slow \
-       -vf scale=-2:720 -acodec aac -b:a 96k demo.mp4
-```
-
-Raise `-crf` (28 to 32) or drop to `-2:480` if it is still too large. If it still
-does not fit, attach it to a **GitHub Release** or upload it unlisted and link it
-here. Never commit the raw capture: git keeps it forever even after you delete
-it.
-
-## Before you record
-
-- Real data off the screen: no classmates' names, numbers, faces or messages.
-- Notifications off.
-- Sensible sample data, not "asdf".
-- One unbroken take per feature. Say what you are doing while you do it.
+- 0:00 what the app is: the dashboard with the streak counter, progress bar and task list
+- 0:25 the overdue badge, and why `isOverdue` is a getter on the Task model
+- 0:45 the custom progress bar and why I built it with a Stack
+- 1:05 how the streak works: once per day, locks at 100% until the next day
+- 1:35 adding a task: name, scheduled days, time, and the modal handing the result back to the dashboard
+- 2:10 editing a task with the pre-filled modal
+- 2:20 a gap I noticed while recording: days aren't shown on the task rows (fixed after recording)
+- 2:35 the success screen and return to the dashboard
+- 2:55 locked checkboxes and saving data with shared_preferences through `TaskStorage`
+- 3:20 how I used AI: Gemini first, then Claude from the second week
+- 3:40 AI example 1: the two bugs in `isOverdue`
+- 4:35 AI example 2: the day selector chips clipping, and rebuilding it
+- 5:15 what I wrote myself: the theme, colour scheme, spacing and text styles
+- 5:50 the part I understand best: `storage.dart` and why it's separate from the dashboard
