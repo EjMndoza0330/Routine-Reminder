@@ -14,7 +14,7 @@
 
 | Dashboard | Task Modal | Success Screen |
 | --- | --- | --- |
-| ![Dashboard](docs/assets/MainDashboard.png) | [TaskModal](docs/assets/TaskModal.png) | ![Success](docs/assets/SuccessScreen.png) |
+| ![Dashboard](docs/assets/MainDashboard.png) | ![TaskModal](docs/assets/TaskModal.png) | ![Success](docs/assets/SuccessScreen.png) |
 
 
 
