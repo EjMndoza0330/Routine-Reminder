@@ -1,13 +1,13 @@
 ## Mockup
 
-![Mockup Pic](Mockup.png)
+![Mockup Pic](assets/Mockup.png)
 
-![PDF Ver](Mockup.pdf)
+![PDF Ver](assets/Mockup.pdf)
 
 ## Wireframes
 
-![Wireframe](Wireframe.png)
+![Wireframe](assets/Wireframe.png)
 
 ## Screens
 
-![Screens](Mockup_with_description.png)
+![Screens](assets/Mockup_with_description.png)
