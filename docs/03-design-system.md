@@ -1,9 +1,10 @@
 # Design system
 
-```
+
 ![Design system](assets/Design_System_(Visual).png)
+
 [Design system (PDF)](assets/Design_System_(Revised))
-```
+
 
 ## Palette
 | Role | Hex | Used for |
