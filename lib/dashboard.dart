@@ -164,7 +164,7 @@ void _checkNewDay() {
 //------------------------------------------------------------------Loading Flag    
 
 //---------------------------------------------------------------------------------Confirm Deletion
-void _confirmDelete(int index) async {
+void confirmDelete(int index) async {
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
@@ -352,7 +352,7 @@ void _confirmDelete(int index) async {
                           ),
 
                           IconButton(
-                            onPressed: t.isCompleted ? null : () => _confirmDelete(index),
+                            onPressed: t.isCompleted ? null : () => confirmDelete(index),
                             style: IconButton.styleFrom(
                               foregroundColor: theme.colorScheme.error,
                             ),
