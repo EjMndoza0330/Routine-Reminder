@@ -106,17 +106,19 @@ void _checkNewDay() {
 
 //-------------------------------------------------------------------------------to update Streak and progress bar
   Future<void> _completedAllTasks() async { //--to update Streak and progress bar
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SuccessScreen(streak: streak + 1, progress: percentage),
-      ),
-    );
-
-    setState(() {
+  setState(() {
       streak++;
     });
     _storage.saveStreak(streak);
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SuccessScreen(streak: streak, progress: percentage),
+      ),
+    );
+
+    
   }
 //--------------------------------------------------------------------------------to update Streak and progress bar
 
